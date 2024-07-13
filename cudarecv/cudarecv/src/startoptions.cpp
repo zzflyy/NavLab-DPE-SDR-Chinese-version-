@@ -20,71 +20,78 @@ void StartOptions::Usage(char* program) {
     cout << "       " << "--skip 0" << endl;//显示 --skip 选项，后面需要跟随一个参数，用于指定跳过的样本数，示例中为 0。
     cout << "       " << "--fileformat 0" << endl;//显示 --fileformat 选项，后面需要跟随一个参数，用于设置文件格式，示例中为 0。
 }//这个函数通常在解析命令行参数时，如果遇到错误或用户可能需要帮助时调用，以指导用户如何正确地使用程序。
+
 //StartOptions 类的 ParseOptions 成员函数的实现，它用于解析命令行参数
 void StartOptions::ParseOptions(int argc, char* argv[]) {
-    int c;
+    int c; // 用于存储 getopt_long 返回的值
 
+    // 无限循环，用于持续解析命令行选项，直到没有更多选项
     while (1) {
+        // 定义一个静态数组，存储长选项的信息
         static struct option longOptions[] = {
-            {"no-console", no_argument, 0, '5'},
-            {"filename", required_argument, 0, 'f'},
-            {"samplerate", required_argument, 0, '1'},
-            {"carrierfrequency", required_argument, 0, '2'},
-            {"skip", required_argument, 0, '3'},
-            {"fileformat", required_argument, 0, '4'},
-            {0, 0, 0, 0}
+            // 每个选项包括名称、是否有参数、标志和对应的值
+            {"no-console", no_argument, 0, '5'}, // 不带参数的选项
+            {"filename", required_argument, 0, 'f'}, // 需要参数的选项
+            {"samplerate", required_argument, 0, '1'}, // 需要参数的选项
+            {"carrierfrequency", required_argument, 0, '2'}, // 需要参数的选项
+            {"skip", required_argument, 0, '3'}, // 需要参数的选项
+            {"fileformat", required_argument, 0, '4'}, // 需要参数的选项
+            {0, 0, 0, 0} // 选项列表结束标志
         };
 
-        int optionIndex = 0;
+        int optionIndex = 0; // 用于跟踪当前处理的长选项索引
 
+        // 解析长选项和短选项，optarg 存储当前选项的参数值
         c = getopt_long(argc, argv, OPT_STR, longOptions, &optionIndex);
+        // 如果没有更多选项或遇到问题，则 getopt_long 返回 -1
+        if (c == -1) break;
 
-        if (c == -1) break;    // end of options
-
+        // 根据当前选项的值，执行相应的操作
         switch (c) {
-        case '5':
-            console = false;
+        case '5': // 如果是 '--no-console' 选项
+            console = false; // 设置 console 为 false
             break;
-        case 'f':
-            fromFile = true;
-            filename = optarg;
-            //cout << "from file: " << filename << endl;
+        case 'f': // 如果是 '--filename' 选项
+            fromFile = true; // 设置 fromFile 为 true
+            filename = optarg; // 存储参数值到 filename
+            //cout << "from file: " << filename << endl; // 调试信息，已注释
             break;
-        case '1':
-            //parse sample rate
+        case '1': // 如果是 '--samplerate' 选项
+            // 解析采样率参数，并存储在 sampleRate 中
             sampleRate = ParseFreq(optarg);
-            //cout << "sample rate: " << sampleRate << endl;
+            //cout << "sample rate: " << sampleRate << endl; // 调试信息，已注释
             break;
-        case '2':
+        case '2': // 如果是 '--carrierfrequency' 选项
+            // 解析载波频率参数，并存储在 carrierFreq 中
             carrierFreq = ParseFreq(optarg);
-            //cout << "carrier frequency: " << carrierFreq << endl;
-            //parse carrier frequency
+            //cout << "carrier frequency: " << carrierFreq << endl; // 调试信息，已注释
             break;
-        case '3':
-            //cout << "skip: " << optarg << endl;
-            //parse skip
+        case '3': // 如果是 '--skip' 选项
+            // 此处尚未实现解析逻辑，仅打印参数值
+            //cout << "skip: " << optarg << endl; // 调试信息，已注释
             break;
-        case '4':
-            //cout << "file format: " << optarg << endl;
-            //parse fileformat
+        case '4': // 如果是 '--fileformat' 选项
+            // 此处尚未实现解析逻辑，仅打印参数值
+            //cout << "file format: " << optarg << endl; // 调试信息，已注释
             break;
-        case '?':
-            /* getopt_long already printed an error message. */
-            error = true;
-            Usage(argv[0]);
-            return;
+        case '?': // 如果 getopt_long 遇到未知选项或错误
+            // getopt_long 已经打印了错误消息
+            error = true; // 设置错误标志为 true
+            Usage(argv[0]); // 打印使用说明
+            return; // 返回函数
             break;
-        default:
+        default: // 如果遇到无法识别的选项
+            // 打印错误信息，并退出函数
             cerr << "Error: option " << c
-                 << " not recognized. Argument: " << optarg << endl;
-            error = true;
-            Usage(argv[0]);
+                << " not recognized. Argument: " << optarg << endl;
+            error = true; // 设置错误标志为 true
+            Usage(argv[0]); // 打印使用说明
             return;
         }
     }
 
+    // 此处的调试信息被注释掉了，如果取消注释，将打印 console 的值
     //cout << "console: " << console << endl;
-
 }
 
 StartOptions::StartOptions(int argc, char* argv[]) {
