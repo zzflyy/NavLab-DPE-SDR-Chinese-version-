@@ -21,3 +21,5 @@ cudarecv/modules/inc/.ptp-sync-folder
 cudarecv/modules/src/.ptp-sync-folder
 cudarecv/cudarecv/.cproject
 cudarecv/cudarecv/.project
+/cudarecv/.vs
+/cudarecv/out/build

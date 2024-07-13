@@ -12,7 +12,7 @@
 //#include "acquisition.h"
 #include "dpeflow.h"
 
-// For math functions used by initialization shift
+// For math functions used by initialization shift//用于初始化偏移的数学函数
 #include <math.h>
 #include <stdlib.h>
 
@@ -33,7 +33,7 @@ void sigHandler(int sig){
     //}
 }
 
-/** \brief  Main entry to program. */
+/** \brief  Main entry to program. *///程序的主要入口点
 int main(int argc, char** argv) {
 
     std::cout << "GNSS Receiver by Gao Research Group" <<endl;
@@ -47,7 +47,7 @@ int main(int argc, char** argv) {
     //if (options.fromFile)
     //    cout << "from file: " << options.filename << endl;
 
-    // Setup POSIX signals to handle ctrl+C ourselves
+    // Setup POSIX signals to handle ctrl+C ourselves//设置 POSIX 信号以处理 Ctrl+C
     KeepRunning = 1;
 
     struct sigaction sigIntHandler;

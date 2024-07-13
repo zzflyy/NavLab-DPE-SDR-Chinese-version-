@@ -10,17 +10,17 @@
 using namespace std;
 
 #define OPT_STR    "f:"
-
+//打印程序的使用方式。
 void StartOptions::Usage(char* program) {
-    cout << "Usage: " << program << "[-i] [-f filename]" << endl;
-    cout << "       " << "--no-console" << endl;
-    cout << "       " << "--filename filename" << endl;
-    cout << "       " << "--samplerate 2000000" << endl;
-    cout << "       " << "--carrierfrequency 0" << endl;
-    cout << "       " << "--skip 0" << endl;
-    cout << "       " << "--fileformat 0" << endl;
-}
-
+    cout << "Usage: " << program << "[-i] [-f filename]" << endl;//打印出程序的使用方法，其中 program 是程序的名称，-i 和 -f filename 是示例选项。
+    cout << "       " << "--no-console" << endl;//显示 --no-console 选项，该选项可能用于指示程序不以控制台模式运行。
+    cout << "       " << "--filename filename" << endl;//显示 --filename 选项，后面需要跟随一个参数（filename），用于指定输入文件的名称。
+    cout << "       " << "--samplerate 2000000" << endl;//显示 --samplerate 选项，后面需要跟随一个参数，用于设置采样率，示例中为 2000000 Hz。
+    cout << "       " << "--carrierfrequency 0" << endl;//显示 --carrierfrequency 选项，后面需要跟随一个参数，用于设置载波频率，示例中为 0 Hz。
+    cout << "       " << "--skip 0" << endl;//显示 --skip 选项，后面需要跟随一个参数，用于指定跳过的样本数，示例中为 0。
+    cout << "       " << "--fileformat 0" << endl;//显示 --fileformat 选项，后面需要跟随一个参数，用于设置文件格式，示例中为 0。
+}//这个函数通常在解析命令行参数时，如果遇到错误或用户可能需要帮助时调用，以指导用户如何正确地使用程序。
+//StartOptions 类的 ParseOptions 成员函数的实现，它用于解析命令行参数
 void StartOptions::ParseOptions(int argc, char* argv[]) {
     int c;
 
