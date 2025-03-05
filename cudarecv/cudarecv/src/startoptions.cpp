@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <getopt.h>
 #include <cstring>
@@ -10,18 +9,19 @@
 using namespace std;
 
 #define OPT_STR    "f:"
-//打印程序的使用方式。
-void StartOptions::Usage(char* program) {
-    cout << "Usage: " << program << "[-i] [-f filename]" << endl;//打印出程序的使用方法，其中 program 是程序的名称，-i 和 -f filename 是示例选项。
-    cout << "       " << "--no-console" << endl;//显示 --no-console 选项，该选项可能用于指示程序不以控制台模式运行。
-    cout << "       " << "--filename filename" << endl;//显示 --filename 选项，后面需要跟随一个参数（filename），用于指定输入文件的名称。
-    cout << "       " << "--samplerate 2000000" << endl;//显示 --samplerate 选项，后面需要跟随一个参数，用于设置采样率，示例中为 2000000 Hz。
-    cout << "       " << "--carrierfrequency 0" << endl;//显示 --carrierfrequency 选项，后面需要跟随一个参数，用于设置载波频率，示例中为 0 Hz。
-    cout << "       " << "--skip 0" << endl;//显示 --skip 选项，后面需要跟随一个参数，用于指定跳过的样本数，示例中为 0。
-    cout << "       " << "--fileformat 0" << endl;//显示 --fileformat 选项，后面需要跟随一个参数，用于设置文件格式，示例中为 0。
-}//这个函数通常在解析命令行参数时，如果遇到错误或用户可能需要帮助时调用，以指导用户如何正确地使用程序。
 
-//StartOptions 类的 ParseOptions 成员函数的实现，它用于解析命令行参数
+// 打印程序的使用方式。
+void StartOptions::Usage(char* program) {
+    cout << "Usage: " << program << "[-i] [-f filename]" << endl; // 打印出程序的使用方法，其中 program 是程序的名称，-i 和 -f filename 是示例选项。
+    cout << "       " << "--no-console" << endl; // 显示 --no-console 选项，该选项可能用于指示程序不以控制台模式运行。
+    cout << "       " << "--filename filename" << endl; // 显示 --filename 选项，后面需要跟随一个参数（filename），用于指定输入文件的名称。
+    cout << "       " << "--samplerate 2000000" << endl; // 显示 --samplerate 选项，后面需要跟随一个参数，用于设置采样率，示例中为 2000000 Hz。
+    cout << "       " << "--carrierfrequency 0" << endl; // 显示 --carrierfrequency 选项，后面需要跟随一个参数，用于设置载波频率，示例中为 0 Hz。
+    cout << "       " << "--skip 0" << endl; // 显示 --skip 选项，后面需要跟随一个参数，用于指定跳过的样本数，示例中为 0。
+    cout << "       " << "--fileformat 0" << endl; // 显示 --fileformat 选项，后面需要跟随一个参数，用于设置文件格式，示例中为 0。
+}
+
+// StartOptions 类的 ParseOptions 成员函数的实现，它用于解析命令行参数
 void StartOptions::ParseOptions(int argc, char* argv[]) {
     int c; // 用于存储 getopt_long 返回的值
 
@@ -94,57 +94,61 @@ void StartOptions::ParseOptions(int argc, char* argv[]) {
     //cout << "console: " << console << endl;
 }
 
+// StartOptions 构造函数，初始化默认值并解析命令行参数
 StartOptions::StartOptions(int argc, char* argv[]) {
-    InitDefaults();
-    ParseOptions(argc, argv);
+    InitDefaults(); // 初始化默认值
+    ParseOptions(argc, argv); // 解析命令行参数
 }
 
+// 初始化默认值
 void StartOptions::InitDefaults() {
-    error = false;
-    console = true;
-    fromFile = false;
-    sampleRate = 2000000;
-    carrierFreq = 0;
-    skip = 0;
-    fileFormat = 0;
-    filename.clear();
+    error = false; // 错误标志
+    console = true; // 控制台模式
+    fromFile = false; // 是否从文件读取
+    sampleRate = 2000000; // 采样率，单位 Hz
+    carrierFreq = 0; // 载波频率，单位 Hz
+    skip = 0; // 跳过的样本数
+    fileFormat = 0; // 文件格式
+    filename.clear(); // 清空文件名
 }
 
+// 解析频率字符串为整数，返回 Hz 值
 int StartOptions::ParseFreq(char* arg) {
-    double val = 0.0;
-    string units;
-    SplitArgument(arg, val, units);
+    double val = 0.0; // 频率值
+    string units; // 单位
+    SplitArgument(arg, val, units); // 分割参数为值和单位
     if (units.length() > 0){
         if (((auxil::strcmpi(units, string("MHz")) == 0) && (units.at(0) == 'M')) ||
                 (units.compare("M") == 0))
-            val *= 1000000.0;
+            val *= 1000000.0; // MHz 转换为 Hz
         else if ((auxil::strcmpi(units, string("GHz")) == 0) ||
                 (auxil::strcmpi(units, string("G")) == 0))
-            val *= 1000000000.0;
+            val *= 1000000000.0; // GHz 转换为 Hz
         else if ((auxil::strcmpi(units, string("kHz")) == 0) ||
                 (auxil::strcmpi(units, string("k")) == 0))
-            val *= 1000.0;
+            val *= 1000.0; // kHz 转换为 Hz
         else
-            return -1;
+            return -1; // 无效单位，返回错误
     }
-    val += 0.5;
-    return (int)val;
+    val += 0.5; // 四舍五入
+    return (int)val; // 返回整数值
 }
 
+// 分割输入字符串为值和单位
 int StartOptions::SplitArgument(char* arg, double &val, string &units) {
-    string str = arg;
-    auxil::trimWhiteSpace(str);
-    size_t split = str.find_first_not_of("1234567890.");
-    string num;
+    string str = arg; // 转换为字符串
+    auxil::trimWhiteSpace(str); // 去除空白字符
+    size_t split = str.find_first_not_of("1234567890."); // 查找第一个非数字字符的位置
+    string num; // 数字部分
     if (split >= str.length()){
-        units.clear();
-        num = str;
+        units.clear(); // 没有单位
+        num = str; // 全部为数字
     } else {
-        num = str.substr(0,split);
-        str = str.substr(split, string::npos);
-        auxil::trimWhiteSpace(str);
-        units = str;
+        num = str.substr(0,split); // 提取数字部分
+        str = str.substr(split, string::npos); // 提取单位部分
+        auxil::trimWhiteSpace(str); // 去除空白字符
+        units = str; // 设置单位
     }
-    val = atof(num.c_str());
-    return 0;
+    val = atof(num.c_str()); // 转换为浮点数
+    return 0; // 返回成功
 }
